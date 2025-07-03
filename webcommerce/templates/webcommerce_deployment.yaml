@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webcommerce
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webcommerce
+  template:
+    metadata:
+      labels:
+        app: webcommerce
+    spec:
+      containers:
+        - name: webcommerce
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: wordpress-storage
+              mountPath: /var/www/html
+      volumes:
+        - name: wordpress-storage
+          persistentVolumeClaim:
+            claimName: webcommerce-pvc
