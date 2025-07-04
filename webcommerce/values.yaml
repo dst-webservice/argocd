@@ -1,0 +1,10 @@
+image:
+  repository: registry.gitlab.com/lachuernet/devops_webservice/webcommerce
+  tag: "latest"
+
+persistence:
+  enabled: true
+  size: 5Gi
+
+service:
+  port: 80
