@@ -1,4 +1,5 @@
 apiVersion: v2
 name: mysqlcommerce
+description: Helm chart for MySQL database for webcommerce
 version: 0.1.0
-description: Custom MySQL for WordPress
+appVersion: "8.0"
