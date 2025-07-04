@@ -1,6 +1,7 @@
 image:
-  repository: registry.gitlab.com/lachuernet/devops_webservice/webcommerce
+  repository: salim2025/webcommerce
   tag: "latest"
+
 
 persistence:
   enabled: true
