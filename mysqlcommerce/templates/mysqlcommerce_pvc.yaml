@@ -5,6 +5,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
+  storageClassName: gp2          # <-- doit être défini explicitement
   resources:
     requests:
       storage: {{ .Values.persistence.size | default "10Gi" }}
