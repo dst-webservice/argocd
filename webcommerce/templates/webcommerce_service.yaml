@@ -1,7 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: webcommerce
+  name: webcommerce-service
+  labels:
+    app: webcommerce
+    expose: "true"
 spec:
   selector:
     app: webcommerce
