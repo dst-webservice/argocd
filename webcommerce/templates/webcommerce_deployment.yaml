@@ -21,11 +21,33 @@ spec:
       containers:
         - name: webcommerce
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: 80
+          env:
+            - name: WORDPRESS_DB_HOST
+              value: "{{ .Values.env.WORDPRESS_DB_HOST }}"
+            - name: WORDPRESS_DB_USER
+              value: "{{ .Values.env.WORDPRESS_DB_USER }}"
+            - name: WORDPRESS_DB_PASSWORD
+              value: "{{ .Values.env.WORDPRESS_DB_PASSWORD }}"
+            - name: WORDPRESS_DB_NAME
+              value: "{{ .Values.env.WORDPRESS_DB_NAME }}"
           volumeMounts:
             - name: wordpress-storage
               mountPath: /var/www/html
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 10
       volumes:
         - name: wordpress-storage
           persistentVolumeClaim:

@@ -10,5 +10,6 @@ spec:
     app: webcommerce
   ports:
     - protocol: TCP
-      port: 80
+      port: {{ .Values.service.port }}
       targetPort: 80
+  type: {{ .Values.service.type }}
