@@ -1,0 +1,41 @@
+
+
+services:
+  mysqlcommerce:
+    image: mysql:5.7
+    container_name: mysqlcommerce
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: bitnami_wordpress
+      MYSQL_USER: bn_wordpress
+      MYSQL_PASSWORD: bitnami
+    volumes:
+      - db_data:/var/lib/mysql
+
+  webcommerce:
+    image: bitnami/wordpress-nginx:latest
+    container_name: webcommerce
+    depends_on:
+      - mysqlcommerce
+    ports:
+      - "8080:8080"
+    environment:
+      WORDPRESS_DATABASE_HOST: mysqlcommerce
+      WORDPRESS_DATABASE_NAME: bitnami_wordpress
+      WORDPRESS_DATABASE_USER: bn_wordpress
+      WORDPRESS_DATABASE_PASSWORD: bitnami
+      WORDPRESS_USERNAME: admin
+      WORDPRESS_PASSWORD: admin123
+      WORDPRESS_EMAIL: admin@example.com
+      WORDPRESS_FIRST_NAME: Dev
+      WORDPRESS_LAST_NAME: Ops
+      WORDPRESS_BLOG_NAME: "WebCommerce Demo"
+    # ✅ Pas de volume local pour éviter les problèmes de permissions
+    # Les données seront stockées dans un volume nommé
+    volumes:
+      - wordpress_data:/bitnami
+
+volumes:
+  db_data:
+  wordpress_data:
