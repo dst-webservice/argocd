@@ -1,14 +1,10 @@
 image:
   repository: mysql
-  tag: "8.0"
+  tag: "8"
   pullPolicy: IfNotPresent
 
-mysqlRootPassword: "1234"
+mysqlRootPassword: rootpassword
+mysqlDatabase: wordpress
 
 persistence:
-  enabled: true
-  size: 10Gi
-  storageClass: gp2
-
-service:
-  port: 3306
+  size: 1Gi

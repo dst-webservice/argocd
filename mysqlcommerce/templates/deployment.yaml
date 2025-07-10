@@ -2,8 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mysqlcommerce
-  labels:
-    app: mysqlcommerce
 spec:
   replicas: 1
   selector:
@@ -15,23 +13,19 @@ spec:
         app: mysqlcommerce
     spec:
       containers:
-        - name: mysqlcommerce
+        - name: mysql
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          ports:
-            - containerPort: 3306
           env:
             - name: MYSQL_ROOT_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: mysqlcommerce-secret
-                  key: mysql-root-password
+              value: "{{ .Values.mysqlRootPassword }}"
             - name: MYSQL_DATABASE
-              value: wordpress
+              value: "{{ .Values.mysqlDatabase }}"
+          ports:
+            - containerPort: 3306
           volumeMounts:
-            - name: mysql-storage
+            - name: mysql-pv
               mountPath: /var/lib/mysql
       volumes:
-        - name: mysql-storage
+        - name: mysql-pv
           persistentVolumeClaim:
-            claimName: mysqlcommerce-pvc
+            claimName: mysql-pvc
