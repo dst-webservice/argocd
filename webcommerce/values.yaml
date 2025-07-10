@@ -1,0 +1,11 @@
+image:
+  repository: salim2025/webcommerce
+  tag: "5439ebe0"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+
+persistence:
+  size: 1Gi

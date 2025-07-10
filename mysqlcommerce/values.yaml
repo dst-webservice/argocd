@@ -1,0 +1,10 @@
+image:
+  repository: mysql
+  tag: "8"
+  pullPolicy: IfNotPresent
+
+mysqlRootPassword: rootpassword
+mysqlDatabase: wordpress
+
+persistence:
+  size: 1Gi
