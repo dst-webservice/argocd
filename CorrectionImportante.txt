@@ -1,6 +1,0 @@
-
- .gitlab-ci.yml 
- partie test refactorée, 
-la commande docker-compose remplacée par docker compose (sans tiret), 
-les commandes Helm sur une seule ligne,
-et la dépendance explicite entre deploy, argocd et cleanup :
