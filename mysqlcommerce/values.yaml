@@ -1,10 +1,10 @@
 image:
   repository: mysql
-  tag: "8"
-  pullPolicy: IfNotPresent
+  tag: "8"  # Pas modifié par le pipeline, donc reste en "latest" pour les pods
 
 mysqlRootPassword: rootpassword
 mysqlDatabase: wordpress
 
 persistence:
   size: 1Gi
+  storageClassName: gp2  # Valeur remplacée par le pipeline GitLab si besoin (ex: gp2)
