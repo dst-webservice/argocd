@@ -1,5 +1,5 @@
 image:
-  repository: salim2025/webcommerce
+  repository: repodocker2025/webcommerce
   tag: "76f1fdbd"
   pullPolicy: IfNotPresent
 
