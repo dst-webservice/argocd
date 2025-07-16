@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: webcommerce
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount | default 1 }}
   selector:
     matchLabels:
       app: webcommerce
@@ -15,15 +15,24 @@ spec:
       containers:
         - name: webcommerce
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
           ports:
-            - containerPort: 8080
+            - containerPort: {{ .Values.service.targetPort | default 8080 }}
           env:
-            - name: DB_HOST
-              value: mysqlcommerce
+            - name: WORDPRESS_DATABASE_HOST
+              value: {{ .Values.env.WORDPRESS_DATABASE_HOST | quote }}
+            - name: WORDPRESS_DATABASE_PORT_NUMBER
+              value: {{ .Values.env.WORDPRESS_DATABASE_PORT_NUMBER | quote }}
+            - name: WORDPRESS_DATABASE_NAME
+              value: {{ .Values.env.WORDPRESS_DATABASE_NAME | quote }}
+            - name: WORDPRESS_DATABASE_USER
+              value: {{ .Values.env.WORDPRESS_DATABASE_USER | quote }}
+            - name: WORDPRESS_DATABASE_PASSWORD
+              value: {{ .Values.env.WORDPRESS_DATABASE_PASSWORD | quote }}
           volumeMounts:
             - name: wp-content
-              mountPath: /bitnami/wordpress
+              mountPath: {{ .Values.persistence.mountPath }}
       volumes:
         - name: wp-content
           persistentVolumeClaim:
-            claimName: wp-pvc
+            claimName: {{ .Values.persistence.claimName }}
