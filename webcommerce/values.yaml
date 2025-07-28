@@ -1,6 +1,6 @@
 image:
   repository: repodocker2025/webcommerce
-  tag: "8857b31d"
+  tag: "e1076d54"
   pullPolicy: IfNotPresent
 
 service:
@@ -18,7 +18,7 @@ env:
 persistence:
   enabled: true
   size: 1Gi
-  storageClassName: gp2
+  storageClassName: gp2  # Sera modifié si besoin (ex: gp2 sur EKS)
   mountPath: /bitnami/wordpress
   claimName: wp-pvc
 
@@ -30,3 +30,9 @@ podSecurityContext:
 containerSecurityContext:
   runAsUser: 1001
   runAsGroup: 1001
+
+startupProbe:
+  enabled: true
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  failureThreshold: 30
