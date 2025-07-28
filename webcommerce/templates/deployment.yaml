@@ -12,6 +12,15 @@ spec:
       labels:
         app: webcommerce
     spec:
+      securityContext:
+        fsGroup: 1001
+      initContainers:
+        - name: fix-permissions
+          image: busybox
+          command: ["sh", "-c", "chown -R 1001:1001 {{ .Values.persistence.mountPath }}"]
+          volumeMounts:
+            - name: wp-content
+              mountPath: {{ .Values.persistence.mountPath }}
       containers:
         - name: webcommerce
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -36,3 +45,4 @@ spec:
         - name: wp-content
           persistentVolumeClaim:
             claimName: {{ .Values.persistence.claimName }}
+
