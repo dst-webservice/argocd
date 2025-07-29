@@ -21,7 +21,8 @@ spec:
             - name: MYSQL_DATABASE
               value: "{{ .Values.mysqlDatabase }}"
           ports:
-            - containerPort: 3306
+          - name: metrics
+            containerPort: 3306
           volumeMounts:
             - name: mysql-pv
               mountPath: /var/lib/mysql
