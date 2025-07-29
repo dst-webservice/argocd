@@ -21,11 +21,19 @@ spec:
             - name: MYSQL_DATABASE
               value: "{{ .Values.mysqlDatabase }}"
           ports:
-          - name: metrics
-            containerPort: 3306
+            - containerPort: 3306
           volumeMounts:
             - name: mysql-pv
               mountPath: /var/lib/mysql
+
+        - name: mysqld-exporter
+          image: prom/mysqld-exporter:v0.14.0
+          ports:
+            - name: metrics
+              containerPort: 9104
+          env:
+            - name: DATA_SOURCE_NAME
+              value: "root:{{ .Values.mysqlRootPassword }}@(localhost:3306)/"
       volumes:
         - name: mysql-pv
           persistentVolumeClaim:
