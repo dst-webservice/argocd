@@ -17,7 +17,7 @@ spec:
       initContainers:
         - name: fix-permissions
           image: busybox
-          command: ["sh", "-c", "chown -R 1001:1001 {{ .Values.persistence.mountPath }}"]
+          command: ["sh", "-c", "chown -R 1001:1001 {{ .Values.persistence.mountPath }} || true"]
           volumeMounts:
             - name: wp-content
               mountPath: {{ .Values.persistence.mountPath }}
@@ -26,7 +26,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
           ports:
-            - name: metrics
+            - name: metrics                       # ✅ Ajout ici
               containerPort: {{ .Values.service.targetPort | default 8080 }}
           env:
             - name: WORDPRESS_DATABASE_HOST
@@ -42,6 +42,9 @@ spec:
           volumeMounts:
             - name: wp-content
               mountPath: {{ .Values.persistence.mountPath }}
+          securityContext:
+            runAsUser: 1001
+            runAsGroup: 1001
       volumes:
         - name: wp-content
           persistentVolumeClaim:
