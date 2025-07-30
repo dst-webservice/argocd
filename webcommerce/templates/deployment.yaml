@@ -11,9 +11,14 @@ spec:
     metadata:
       labels:
         app: webcommerce
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "{{ .Values.service.targetPort | default 8080 }}"
     spec:
       securityContext:
         fsGroup: 1001
+
+      {{- if .Values.persistence.enabled }}
       initContainers:
         - name: fix-permissions
           image: busybox
@@ -21,12 +26,14 @@ spec:
           volumeMounts:
             - name: wp-content
               mountPath: {{ .Values.persistence.mountPath }}
+      {{- end }}
+
       containers:
         - name: webcommerce
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
           ports:
-            - name: metrics                       # ✅ Ajout ici
+            - name: metrics
               containerPort: {{ .Values.service.targetPort | default 8080 }}
           env:
             - name: WORDPRESS_DATABASE_HOST
@@ -39,13 +46,18 @@ spec:
               value: {{ .Values.env.WORDPRESS_DATABASE_USER | quote }}
             - name: WORDPRESS_DATABASE_PASSWORD
               value: {{ .Values.env.WORDPRESS_DATABASE_PASSWORD | quote }}
+          {{- if .Values.persistence.enabled }}
           volumeMounts:
             - name: wp-content
               mountPath: {{ .Values.persistence.mountPath }}
+          {{- end }}
           securityContext:
             runAsUser: 1001
             runAsGroup: 1001
+
+      {{- if .Values.persistence.enabled }}
       volumes:
         - name: wp-content
           persistentVolumeClaim:
             claimName: {{ .Values.persistence.claimName }}
+      {{- end }}
