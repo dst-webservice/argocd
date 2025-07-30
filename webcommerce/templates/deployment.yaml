@@ -18,7 +18,7 @@ spec:
       securityContext:
         fsGroup: 1001
 
-      {{- if .Values.persistence.enabled }}
+{{- if .Values.persistence.enabled }}
       initContainers:
         - name: fix-permissions
           image: busybox
@@ -26,7 +26,7 @@ spec:
           volumeMounts:
             - name: wp-content
               mountPath: {{ .Values.persistence.mountPath }}
-      {{- end }}
+{{- end }}
 
       containers:
         - name: webcommerce
@@ -46,18 +46,18 @@ spec:
               value: {{ .Values.env.WORDPRESS_DATABASE_USER | quote }}
             - name: WORDPRESS_DATABASE_PASSWORD
               value: {{ .Values.env.WORDPRESS_DATABASE_PASSWORD | quote }}
-          {{- if .Values.persistence.enabled }}
+{{- if .Values.persistence.enabled }}
           volumeMounts:
             - name: wp-content
               mountPath: {{ .Values.persistence.mountPath }}
-          {{- end }}
+{{- end }}
           securityContext:
             runAsUser: 1001
             runAsGroup: 1001
 
-      {{- if .Values.persistence.enabled }}
+{{- if .Values.persistence.enabled }}
       volumes:
         - name: wp-content
           persistentVolumeClaim:
             claimName: {{ .Values.persistence.claimName }}
-      {{- end }}
+{{- end }}
