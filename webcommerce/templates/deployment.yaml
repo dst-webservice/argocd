@@ -1,40 +1,34 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: webcommerce
+  name: {{ include "webcommerce.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "webcommerce.name" . }}
+    helm.sh/chart: {{ include "webcommerce.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
 spec:
-  replicas: {{ .Values.replicaCount | default 1 }}
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: webcommerce
+      app.kubernetes.io/name: {{ include "webcommerce.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name | quote }}
   template:
     metadata:
       labels:
-        app: webcommerce
-      annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/port: "{{ .Values.service.targetPort | default 8080 }}"
+        app.kubernetes.io/name: {{ include "webcommerce.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name | quote }}
     spec:
       securityContext:
-        fsGroup: 1001
-
-{{- if .Values.persistence.enabled }}
-      initContainers:
-        - name: fix-permissions
-          image: busybox
-          command: ["sh", "-c", "chown -R 1001:1001 {{ .Values.persistence.mountPath }} || true"]
-          volumeMounts:
-            - name: wp-content
-              mountPath: {{ .Values.persistence.mountPath }}
-{{- end }}
-
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: webcommerce
+        - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: metrics
-              containerPort: {{ .Values.service.targetPort | default 8080 }}
+            - name: http
+              containerPort: {{ .Values.service.targetPort }}
+              protocol: TCP
           env:
             - name: WORDPRESS_DATABASE_HOST
               value: {{ .Values.env.WORDPRESS_DATABASE_HOST | quote }}
@@ -46,18 +40,19 @@ spec:
               value: {{ .Values.env.WORDPRESS_DATABASE_USER | quote }}
             - name: WORDPRESS_DATABASE_PASSWORD
               value: {{ .Values.env.WORDPRESS_DATABASE_PASSWORD | quote }}
-{{- if .Values.persistence.enabled }}
           volumeMounts:
-            - name: wp-content
+            - name: wp-data
               mountPath: {{ .Values.persistence.mountPath }}
-{{- end }}
           securityContext:
-            runAsUser: 1001
-            runAsGroup: 1001
-
-{{- if .Values.persistence.enabled }}
+            {{- toYaml .Values.containerSecurityContext | nindent 12 }}
+          startupProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: {{ .Values.startupProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.startupProbe.periodSeconds }}
+            failureThreshold: {{ .Values.startupProbe.failureThreshold }}
       volumes:
-        - name: wp-content
+        - name: wp-data
           persistentVolumeClaim:
             claimName: {{ .Values.persistence.claimName }}
-{{- end }}
