@@ -1,6 +1,6 @@
 image:
   repository: repodocker2025/webcommerce
-  tag: "c2516ee6"
+  tag: "ba74eb69"
   pullPolicy: IfNotPresent
 
 service:
@@ -9,18 +9,18 @@ service:
   targetPort: 8080
 
 env:
-  WORDPRESS_DATABASE_HOST: "mysqlcommerce"
+  WORDPRESS_DATABASE_HOST: mysqlcommerce
   WORDPRESS_DATABASE_PORT_NUMBER: "3306"
-  WORDPRESS_DATABASE_NAME: "wordpress"
-  WORDPRESS_DATABASE_USER: "root"
-  WORDPRESS_DATABASE_PASSWORD: "rootpassword"
+  WORDPRESS_DATABASE_NAME: wordpress
+  WORDPRESS_DATABASE_USER: root
+  WORDPRESS_DATABASE_PASSWORD: rootpassword
 
 persistence:
   enabled: true
-  size: "1Gi"
+  size: 1Gi
   storageClassName: gp2
-  mountPath: "/bitnami/wordpress"
-  claimName: "wp-pvc"
+  mountPath: /bitnami/wordpress
+  claimName: wp-pvc
 
 replicaCount: 1
 
