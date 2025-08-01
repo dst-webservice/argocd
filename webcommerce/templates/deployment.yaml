@@ -6,7 +6,7 @@ metadata:
   labels:
     app: webcommerce
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount | default 1 }}
   selector:
     matchLabels:
       app: webcommerce
@@ -26,36 +26,23 @@ spec:
               mountPath: /bitnami/wordpress
       containers:
         - name: webcommerce
-          image: repodocker2025/webcommerce:latest # À surcharger dynamiquement par Helm/CI
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           ports:
             - containerPort: 8080
           env:
-            - name: WORDPRESS_DATABASE_HOST
-              value: mysqlcommerce
-            - name: WORDPRESS_DATABASE_PORT_NUMBER
-              value: "3306"
-            - name: WORDPRESS_DATABASE_NAME
-              value: bitnami_wordpress
-            - name: WORDPRESS_DATABASE_USER
-              value: bn_wordpress
-            - name: WORDPRESS_DATABASE_PASSWORD
-              value: bitnami
-            - name: WORDPRESS_USERNAME
-              value: admin
-            - name: WORDPRESS_PASSWORD
-              value: admin123
-            - name: WORDPRESS_EMAIL
-              value: admin@example.com
-            - name: WORDPRESS_FIRST_NAME
-              value: Dev
-            - name: WORDPRESS_LAST_NAME
-              value: Ops
-            - name: WORDPRESS_BLOG_NAME
-              value: "WebCommerce Demo"
+{{- if .Values.env }}
+{{- range $key, $value := .Values.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+{{- end }}
+{{- end }}
           volumeMounts:
             - name: wp-content
               mountPath: /bitnami/wordpress
+          securityContext:
+            runAsUser: {{ .Values.containerSecurityContext.runAsUser | default 1001 }}
+            runAsGroup: {{ .Values.containerSecurityContext.runAsGroup | default 1001 }}
       volumes:
         - name: wp-content
           persistentVolumeClaim:
-            claimName: wp-pvc
+            claimName: {{ .Values.persistence.claimName | default "wp-pvc" }}
