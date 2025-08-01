@@ -17,16 +17,16 @@ spec:
       initContainers:
         - name: fix-permissions
           image: busybox
-          command: ["sh", "-c", "chown -R 1001:1001 {{ .Values.persistence.mountPath }} || true"]
+          command: ["sh", "-c", "chown -R 1001:1001 /bitnami/wordpress || true"]
           volumeMounts:
             - name: wp-content
-              mountPath: {{ .Values.persistence.mountPath }}
+              mountPath: /bitnami/wordpress
       containers:
         - name: webcommerce
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
           ports:
-            - name: metrics                       # ✅ Ajout ici
+            - name: metrics
               containerPort: {{ .Values.service.targetPort | default 8080 }}
           env:
             - name: WORDPRESS_DATABASE_HOST
@@ -41,7 +41,7 @@ spec:
               value: {{ .Values.env.WORDPRESS_DATABASE_PASSWORD | quote }}
           volumeMounts:
             - name: wp-content
-              mountPath: {{ .Values.persistence.mountPath }}
+              mountPath: /bitnami/wordpress
           securityContext:
             runAsUser: 1001
             runAsGroup: 1001

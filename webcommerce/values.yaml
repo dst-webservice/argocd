@@ -1,6 +1,6 @@
 image:
   repository: repodocker2025/webcommerce
-  tag: "ba74eb69"
+  tag: "f902e220"
   pullPolicy: IfNotPresent
 
 service:
