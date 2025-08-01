@@ -2,8 +2,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: webcommerce
+  namespace: deploy
+  labels:
+    app: webcommerce
 spec:
-  replicas: {{ .Values.replicaCount | default 1 }}
+  replicas: 1
   selector:
     matchLabels:
       app: webcommerce
@@ -16,36 +19,43 @@ spec:
         fsGroup: 1001
       initContainers:
         - name: fix-permissions
-          image: busybox
+          image: busybox:latest
           command: ["sh", "-c", "chown -R 1001:1001 /bitnami/wordpress || true"]
           volumeMounts:
             - name: wp-content
               mountPath: /bitnami/wordpress
       containers:
         - name: webcommerce
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+          image: repodocker2025/webcommerce:latest # À surcharger dynamiquement par Helm/CI
           ports:
-            - name: metrics
-              containerPort: {{ .Values.service.targetPort | default 8080 }}
+            - containerPort: 8080
           env:
             - name: WORDPRESS_DATABASE_HOST
-              value: {{ .Values.env.WORDPRESS_DATABASE_HOST | quote }}
+              value: mysqlcommerce
             - name: WORDPRESS_DATABASE_PORT_NUMBER
-              value: {{ .Values.env.WORDPRESS_DATABASE_PORT_NUMBER | quote }}
+              value: "3306"
             - name: WORDPRESS_DATABASE_NAME
-              value: {{ .Values.env.WORDPRESS_DATABASE_NAME | quote }}
+              value: bitnami_wordpress
             - name: WORDPRESS_DATABASE_USER
-              value: {{ .Values.env.WORDPRESS_DATABASE_USER | quote }}
+              value: bn_wordpress
             - name: WORDPRESS_DATABASE_PASSWORD
-              value: {{ .Values.env.WORDPRESS_DATABASE_PASSWORD | quote }}
+              value: bitnami
+            - name: WORDPRESS_USERNAME
+              value: admin
+            - name: WORDPRESS_PASSWORD
+              value: admin123
+            - name: WORDPRESS_EMAIL
+              value: admin@example.com
+            - name: WORDPRESS_FIRST_NAME
+              value: Dev
+            - name: WORDPRESS_LAST_NAME
+              value: Ops
+            - name: WORDPRESS_BLOG_NAME
+              value: "WebCommerce Demo"
           volumeMounts:
             - name: wp-content
               mountPath: /bitnami/wordpress
-          securityContext:
-            runAsUser: 1001
-            runAsGroup: 1001
       volumes:
         - name: wp-content
           persistentVolumeClaim:
-            claimName: {{ .Values.persistence.claimName }}
+            claimName: wp-pvc
