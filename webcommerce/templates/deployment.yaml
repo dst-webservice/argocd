@@ -20,13 +20,19 @@ spec:
       initContainers:
         - name: fix-permissions
           image: busybox:latest
-          command: ["sh", "-c", "chown -R 1001:1001 /bitnami/wordpress || true"]
+          command:
+            - sh
+            - -c
+            - |
+              echo "Fixing permissions on volume..."
+              mkdir -p /bitnami/wordpress
+              chown -R 1001:1001 /bitnami/wordpress || true
           volumeMounts:
             - name: wp-content
               mountPath: /bitnami/wordpress
       containers:
         - name: webcommerce
-          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           ports:
             - containerPort: 8080
           env:
@@ -40,8 +46,17 @@ spec:
             - name: wp-content
               mountPath: /bitnami/wordpress
           securityContext:
-            runAsUser: {{ .Values.containerSecurityContext.runAsUser | default 1001 }}
-            runAsGroup: {{ .Values.containerSecurityContext.runAsGroup | default 1001 }}
+            runAsUser: 1001
+            runAsGroup: 1001
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - sh
+                  - -c
+                  - |
+                    echo "Re-checking permissions in postStart..."
+                    chown -R 1001:1001 /bitnami/wordpress || true
       volumes:
         - name: wp-content
           persistentVolumeClaim:

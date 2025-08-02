@@ -1,6 +1,6 @@
 image:
   repository: repodocker2025/webcommerce
-  tag: "fa3dad71"
+  tag: "9d3d98ab"
   pullPolicy: IfNotPresent
 
 service:
@@ -36,3 +36,9 @@ startupProbe:
   initialDelaySeconds: 10
   periodSeconds: 10
   failureThreshold: 30
+
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  failureThreshold: 5
