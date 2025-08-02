@@ -4,7 +4,6 @@ image:
   tag: 8.0.36
 
 auth:
-  enabled: true   # 👈 INDISPENSABLE
   rootPassword: rootpassword
   database: wp_db
   username: wp_user
