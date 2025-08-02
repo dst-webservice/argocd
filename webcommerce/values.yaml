@@ -1,6 +1,6 @@
 image:
   repository: repodocker2025/webcommerce
-  tag: "65e3bb23"
+  tag: "c046d980"
   pullPolicy: IfNotPresent
 
 service:
@@ -11,10 +11,10 @@ service:
 env:
   WORDPRESS_DATABASE_HOST: mysqlcommerce
   WORDPRESS_DATABASE_PORT_NUMBER: "3306"
-  WORDPRESS_DATABASE_NAME: wordpress
-  WORDPRESS_DATABASE_USER: root
-  WORDPRESS_DATABASE_PASSWORD: rootpassword
-  WORDPRESS_ENABLE_DATABASE_SSL: "no"  # 👈 FORCÉ
+  WORDPRESS_DATABASE_NAME: wp_db
+  WORDPRESS_DATABASE_USER: wp_user
+  WORDPRESS_DATABASE_PASSWORD: wp_pass2025
+  WORDPRESS_ENABLE_DATABASE_SSL: "no"  # 🔒 SSL désactivé pour la connexion locale K3S
 
 persistence:
   enabled: true

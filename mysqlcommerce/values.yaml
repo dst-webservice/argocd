@@ -1,10 +1,35 @@
 image:
-  repository: mysql
-  tag: "5.7"  # Pas modifié par le pipeline, donc reste en "latest" pour les pods
+  registry: docker.io
+  repository: bitnami/mysql
+  tag: 8.0.36
 
-mysqlRootPassword: rootpassword
-mysqlDatabase: wordpress
+auth:
+  rootPassword: rootpassword
+  database: wp_db
+  username: wp_user
+  password: wp_pass2025
 
-persistence:
-  size: 1Gi
-  storageClassName: gp2  # Valeur remplacée par le pipeline GitLab si besoin (ex: gp2)
+primary:
+  service:
+    type: ClusterIP
+    port: 3306
+
+  persistence:
+    enabled: true
+    storageClass: local-path
+    size: 1Gi
+
+  configuration: |
+    [mysqld]
+    skip-name-resolve
+    explicit_defaults_for_timestamp
+    basedir=/opt/bitnami/mysql
+    plugin_dir=/opt/bitnami/mysql/lib/plugin
+    port=3306
+    ssl=0
+
+metrics:
+  enabled: false
+
+volumePermissions:
+  enabled: true
