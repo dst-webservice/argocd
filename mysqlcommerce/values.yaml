@@ -1,6 +1,6 @@
 image:
   repository: mysql
-  tag: "8"  # Pas modifié par le pipeline, donc reste en "latest" pour les pods
+  tag: "8.0"  # Pas modifié par le pipeline, donc reste en "latest" pour les pods
 
 mysqlRootPassword: rootpassword
 mysqlDatabase: wordpress
