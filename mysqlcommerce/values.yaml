@@ -28,6 +28,15 @@ primary:
     port=3306
     ssl=0
 
+  podSecurityContext:
+    enabled: true
+    fsGroup: 1001
+
+  containerSecurityContext:
+    enabled: true
+    runAsUser: 1001
+    runAsGroup: 1001
+
 metrics:
   enabled: false
 
