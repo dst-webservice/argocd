@@ -24,9 +24,10 @@ spec:
             - sh
             - -c
             - |
-              echo "Fixing permissions on volume..."
+              echo "🔧 Fixing permissions on volume..."
               mkdir -p /bitnami/wordpress
               chown -R 1001:1001 /bitnami/wordpress || true
+              chmod -R u+w /bitnami/wordpress || true
           volumeMounts:
             - name: wp-content
               mountPath: /bitnami/wordpress
@@ -55,8 +56,10 @@ spec:
                   - sh
                   - -c
                   - |
-                    echo "Re-checking permissions in postStart..."
+                    echo "🔁 PostStart permission check..."
+                    mkdir -p /bitnami/wordpress
                     chown -R 1001:1001 /bitnami/wordpress || true
+                    chmod -R u+w /bitnami/wordpress || true
       volumes:
         - name: wp-content
           persistentVolumeClaim:
