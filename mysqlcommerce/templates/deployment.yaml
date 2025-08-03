@@ -15,18 +15,37 @@ spec:
       containers:
         - name: mysql
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: MYSQL_ROOT_PASSWORD
-              value: "{{ .Values.mysqlRootPassword }}"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.auth.existingSecret }}
+                  key: mysql-root-password
             - name: MYSQL_DATABASE
-              value: "{{ .Values.mysqlDatabase }}"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.auth.existingSecret }}
+                  key: mysql-database
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.auth.existingSecret }}
+                  key: mysql-user
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.auth.existingSecret }}
+                  key: mysql-password
           ports:
-            - name: metrics               # ✅ Ajout ici
-              containerPort: 3306
+            - containerPort: 3306
           volumeMounts:
             - name: mysql-pv
               mountPath: /var/lib/mysql
+      securityContext:
+        runAsUser: {{ .Values.primary.containerSecurityContext.runAsUser }}
+        runAsGroup: {{ .Values.primary.containerSecurityContext.runAsGroup }}
       volumes:
         - name: mysql-pv
           persistentVolumeClaim:
-            claimName: mysql-pvc
+            claimName: {{ .Values.primary.persistence.claimName }}

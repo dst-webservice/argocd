@@ -1,20 +1,17 @@
 image:
-  registry: docker.io
   repository: bitnami/mysql
   tag: 8.0.36
+  pullPolicy: IfNotPresent
 
 auth:
   existingSecret: mysql-auth
 
 primary:
-  service:
-    type: ClusterIP
-    port: 3306
-
   persistence:
     enabled: true
     storageClass: local-path
     size: 1Gi
+    claimName: mysql-pvc
 
   configuration: |
     [mysqld]
@@ -33,9 +30,3 @@ primary:
     enabled: true
     runAsUser: 1001
     runAsGroup: 1001
-
-metrics:
-  enabled: false
-
-volumePermissions:
-  enabled: true
