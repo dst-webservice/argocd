@@ -2,8 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mysqlcommerce
-  labels:
-    app: mysqlcommerce
 spec:
   replicas: 1
   selector:
@@ -15,7 +13,7 @@ spec:
         app: mysqlcommerce
     spec:
       securityContext:
-        fsGroup: 1001
+        fsGroup: {{ .Values.securityContext.pod.fsGroup }}
       containers:
         - name: mysql
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -24,28 +22,29 @@ spec:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.auth.existingSecret }}
+                  name: mysql-auth
                   key: mysql-root-password
             - name: MYSQL_DATABASE
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.auth.existingSecret }}
+                  name: mysql-auth
                   key: mysql-database
             - name: MYSQL_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.auth.existingSecret }}
+                  name: mysql-auth
                   key: mysql-user
             - name: MYSQL_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.auth.existingSecret }}
+                  name: mysql-auth
                   key: mysql-password
           ports:
             - containerPort: 3306
+              name: mysql
           volumeMounts:
             - name: mysql-pv
-              mountPath: /bitnami/mysql
+              mountPath: /bitnami/mysql/data
           securityContext:
             runAsUser: {{ .Values.securityContext.container.runAsUser }}
             runAsGroup: {{ .Values.securityContext.container.runAsGroup }}

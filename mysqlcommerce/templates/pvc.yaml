@@ -1,13 +1,13 @@
-{{- if and .Values.primary .Values.primary.persistence }}
+{{- if .Values.persistence }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: mysql-pvc
+  name: {{ .Values.persistence.claimName }}
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: {{ .Values.primary.persistence.size | default "1Gi" }}
-  storageClassName: {{ .Values.primary.persistence.storageClass | default "local-path" }}
+      storage: {{ .Values.persistence.size | default "1Gi" }}
+  storageClassName: {{ .Values.persistence.storageClassName | default "local-path" }}
 {{- end }}
