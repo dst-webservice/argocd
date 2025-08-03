@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mysqlcommerce
+  labels:
+    app: mysqlcommerce
 spec:
   replicas: 1
   selector:
@@ -12,6 +14,8 @@ spec:
       labels:
         app: mysqlcommerce
     spec:
+      securityContext:
+        fsGroup: 1001
       containers:
         - name: mysql
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -41,11 +45,11 @@ spec:
             - containerPort: 3306
           volumeMounts:
             - name: mysql-pv
-              mountPath: /var/lib/mysql
-      securityContext:
-        runAsUser: {{ .Values.primary.containerSecurityContext.runAsUser }}
-        runAsGroup: {{ .Values.primary.containerSecurityContext.runAsGroup }}
+              mountPath: /bitnami/mysql
+          securityContext:
+            runAsUser: {{ .Values.securityContext.container.runAsUser }}
+            runAsGroup: {{ .Values.securityContext.container.runAsGroup }}
       volumes:
         - name: mysql-pv
           persistentVolumeClaim:
-            claimName: {{ .Values.primary.persistence.claimName }}
+            claimName: {{ .Values.persistence.claimName }}

@@ -6,27 +6,24 @@ image:
 auth:
   existingSecret: mysql-auth
 
-primary:
-  persistence:
-    enabled: true
-    storageClass: local-path
-    size: 1Gi
-    claimName: mysql-pvc
+persistence:
+  enabled: true
+  storageClassName: gp2
+  size: 1Gi
+  claimName: mysql-pvc
 
-  configuration: |
-    [mysqld]
-    skip-name-resolve
-    explicit_defaults_for_timestamp
-    basedir=/opt/bitnami/mysql
-    plugin_dir=/opt/bitnami/mysql/lib/plugin
-    port=3306
-    ssl=0
-
-  podSecurityContext:
-    enabled: true
+securityContext:
+  pod:
     fsGroup: 1001
-
-  containerSecurityContext:
-    enabled: true
+  container:
     runAsUser: 1001
     runAsGroup: 1001
+
+configuration: |
+  [mysqld]
+  skip-name-resolve
+  explicit_defaults_for_timestamp
+  basedir=/opt/bitnami/mysql
+  plugin_dir=/opt/bitnami/mysql/lib/plugin
+  port=3306
+  ssl=0
