@@ -1,6 +1,6 @@
 image:
   repository: repodocker2025/webcommerce
-  tag: "b2679ac5"
+  tag: "f473a7d5"
   pullPolicy: IfNotPresent
 
 service:
@@ -11,7 +11,7 @@ service:
 env:
   WORDPRESS_DATABASE_HOST: mysqlcommerce
   WORDPRESS_DATABASE_PORT_NUMBER: "3306"
-  WORDPRESS_DATABASE_NAME: wp_db
+  WORDPRESS_DATABASE_NAME: wordpress    # ✅ cohérent avec mysqlcommerce
   WORDPRESS_DATABASE_USER: wp_user
   WORDPRESS_DATABASE_PASSWORD: wp_pass2025
   WORDPRESS_ENABLE_DATABASE_SSL: "no"  # 🔒 SSL désactivé pour la connexion locale K3S
@@ -31,6 +31,9 @@ podSecurityContext:
 containerSecurityContext:
   runAsUser: 1001
   runAsGroup: 1001
+
+volumePermissions:
+  enabled: true  # ✅ corrige les erreurs d'écriture sur les fichiers montés
 
 startupProbe:
   enabled: true

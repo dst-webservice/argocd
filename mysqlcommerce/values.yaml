@@ -7,8 +7,8 @@ auth:
   rootPassword: rootpassword
   username: wp_user
   password: wp_pass2025
-  database: wp_db
-  forcePassword: true   # ✅ ligne essentielle pour que ça fonctionne sans Secret
+  database: wordpress
+  forcePassword: true   # ⚠️ essentiel
 
 primary:
   service:
