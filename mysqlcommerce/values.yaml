@@ -4,11 +4,7 @@ image:
   tag: 8.0.36
 
 auth:
-  rootPassword: rootpassword
-  username: wp_user
-  password: wp_pass2025
-  database: wordpress
-  forcePassword: true   # ⚠️ essentiel
+  existingSecret: mysql-auth
 
 primary:
   service:

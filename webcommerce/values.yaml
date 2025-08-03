@@ -1,6 +1,6 @@
 image:
   repository: repodocker2025/webcommerce
-  tag: "f473a7d5"
+  tag: "a531e3d3"
   pullPolicy: IfNotPresent
 
 service:
@@ -11,7 +11,7 @@ service:
 env:
   WORDPRESS_DATABASE_HOST: mysqlcommerce
   WORDPRESS_DATABASE_PORT_NUMBER: "3306"
-  WORDPRESS_DATABASE_NAME: wordpress    # ✅ cohérent avec mysqlcommerce
+  WORDPRESS_DATABASE_NAME: wordpress
   WORDPRESS_DATABASE_USER: wp_user
   WORDPRESS_DATABASE_PASSWORD: wp_pass2025
   WORDPRESS_ENABLE_DATABASE_SSL: "no"  # 🔒 SSL désactivé pour la connexion locale K3S
