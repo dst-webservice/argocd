@@ -1,6 +1,6 @@
 image:
   repository: repodocker2025/webcommerce
-  tag: "6c2a3de6"
+  tag: "4bcc05d7"
   pullPolicy: IfNotPresent
 
 service:
@@ -14,12 +14,12 @@ env:
   WORDPRESS_DATABASE_NAME: wp_db
   WORDPRESS_DATABASE_USER: wp_user
   WORDPRESS_DATABASE_PASSWORD: wp_pass2025
-  WORDPRESS_ENABLE_DATABASE_SSL: "no"  # 🔒 SSL désactivé pour la connexion locale K3S
+  WORDPRESS_ENABLE_DATABASE_SSL: "no"
 
 persistence:
   enabled: true
   size: 1Gi
-  storageClassName: gp2  # "local-path" sur K3s, "gp2" sur EKS
+  storageClassName: gp2
   mountPath: /bitnami/wordpress
   claimName: wp-pvc
 
@@ -30,3 +30,4 @@ podSecurityContext:
 
 containerSecurityContext:
   runAsUser: 1001
+  runAsNonRoot: true

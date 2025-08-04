@@ -5,7 +5,7 @@ metadata:
   labels:
     app: webcommerce
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: webcommerce
@@ -15,14 +15,13 @@ spec:
         app: webcommerce
     spec:
       securityContext:
-        fsGroup: 1001
+        fsGroup: {{ .Values.podSecurityContext.fsGroup }}
       containers:
         - name: webcommerce
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - containerPort: 8080
-              name: http
+            - containerPort: {{ .Values.service.targetPort }}
           env:
             - name: WORDPRESS_DATABASE_HOST
               value: "{{ .Values.env.WORDPRESS_DATABASE_HOST }}"
@@ -37,15 +36,9 @@ spec:
             - name: WORDPRESS_ENABLE_DATABASE_SSL
               value: "{{ .Values.env.WORDPRESS_ENABLE_DATABASE_SSL }}"
           volumeMounts:
-            - name: wp-content
+            - name: wp-data
               mountPath: "{{ .Values.persistence.mountPath }}"
-          lifecycle:
-            postStart:
-              exec:
-                command: ["/bin/bash", "-c", "/install-woocommerce.sh"]
-          securityContext:
-            runAsUser: 1001
       volumes:
-        - name: wp-content
+        - name: wp-data
           persistentVolumeClaim:
             claimName: "{{ .Values.persistence.claimName }}"

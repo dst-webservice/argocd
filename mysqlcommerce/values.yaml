@@ -1,10 +1,21 @@
 image:
   repository: mysql
-  tag: "8"  # Pas modifié par le pipeline, donc reste en "latest" pour les pods
+  tag: "5.7"
+  pullPolicy: IfNotPresent
 
-mysqlRootPassword: rootpassword
-mysqlDatabase: wordpress
+env:
+  MYSQL_ROOT_PASSWORD: root_pass2025
+  MYSQL_DATABASE: wp_db
+  MYSQL_USER: wp_user
+  MYSQL_PASSWORD: wp_pass2025
 
 persistence:
+  enabled: true
   size: 1Gi
-  storageClassName: gp2  # Valeur remplacée par le pipeline GitLab si besoin (ex: gp2)
+  storageClassName: gp2
+  mountPath: /var/lib/mysql
+  claimName: mysql-pvc
+
+service:
+  type: ClusterIP
+  port: 3306
