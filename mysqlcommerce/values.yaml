@@ -3,20 +3,19 @@ image:
   tag: "5.7"
   pullPolicy: IfNotPresent
 
-auth:
-  rootPassword: root_pass2025
-  database: wp_db
-  username: wp_user
-  password: wp_pass2025
+env:
+  MYSQL_ROOT_PASSWORD: root_pass2025
+  MYSQL_DATABASE: wp_db
+  MYSQL_USER: wp_user
+  MYSQL_PASSWORD: wp_pass2025
 
 persistence:
   enabled: true
   size: 1Gi
-  storageClass: local-path
-  existingClaim: mysql-pvc
+  storageClassName: gp2
+  mountPath: /bitnami/mysql
+  claimName: mysql-pvc
 
-primary:
-  service:
-    type: ClusterIP
-    ports:
-      mysql: 3306
+service:
+  type: ClusterIP
+  port: 3306

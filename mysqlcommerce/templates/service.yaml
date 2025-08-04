@@ -6,4 +6,7 @@ spec:
   selector:
     app: mysqlcommerce
   ports:
-    - port: 3306
+    - protocol: TCP
+      port: {{ .Values.service.port }}
+      targetPort: 3306
+  type: {{ .Values.service.type }}
