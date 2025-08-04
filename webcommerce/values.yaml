@@ -1,6 +1,6 @@
 image:
   repository: repodocker2025/webcommerce
-  tag: "1d9f1295"
+  tag: "6c2a3de6"
   pullPolicy: IfNotPresent
 
 service:
@@ -11,7 +11,7 @@ service:
 env:
   WORDPRESS_DATABASE_HOST: mysqlcommerce
   WORDPRESS_DATABASE_PORT_NUMBER: "3306"
-  WORDPRESS_DATABASE_NAME: wordpress
+  WORDPRESS_DATABASE_NAME: wp_db
   WORDPRESS_DATABASE_USER: wp_user
   WORDPRESS_DATABASE_PASSWORD: wp_pass2025
   WORDPRESS_ENABLE_DATABASE_SSL: "no"  # 🔒 SSL désactivé pour la connexion locale K3S
@@ -19,7 +19,7 @@ env:
 persistence:
   enabled: true
   size: 1Gi
-  storageClassName: gp2
+  storageClassName: gp2  # "local-path" sur K3s, "gp2" sur EKS
   mountPath: /bitnami/wordpress
   claimName: wp-pvc
 
@@ -30,19 +30,3 @@ podSecurityContext:
 
 containerSecurityContext:
   runAsUser: 1001
-  runAsGroup: 1001
-
-volumePermissions:
-  enabled: true  # ✅ corrige les erreurs d'écriture sur les fichiers montés
-
-startupProbe:
-  enabled: true
-  initialDelaySeconds: 10
-  periodSeconds: 10
-  failureThreshold: 30
-
-readinessProbe:
-  enabled: true
-  initialDelaySeconds: 10
-  periodSeconds: 10
-  failureThreshold: 5

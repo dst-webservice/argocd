@@ -2,11 +2,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: webcommerce
-  namespace: deploy
   labels:
     app: webcommerce
 spec:
-  replicas: {{ .Values.replicaCount | default 1 }}
+  replicas: 1
   selector:
     matchLabels:
       app: webcommerce
@@ -17,50 +16,36 @@ spec:
     spec:
       securityContext:
         fsGroup: 1001
-      initContainers:
-        - name: fix-permissions
-          image: busybox:latest
-          command:
-            - sh
-            - -c
-            - |
-              echo "🔧 Fixing permissions on volume..."
-              mkdir -p /bitnami/wordpress
-              chown -R 1001:1001 /bitnami/wordpress || true
-              chmod -R u+w /bitnami/wordpress || true
-          volumeMounts:
-            - name: wp-content
-              mountPath: /bitnami/wordpress
       containers:
         - name: webcommerce
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: 8080
+              name: http
           env:
-{{- if .Values.env }}
-{{- range $key, $value := .Values.env }}
-            - name: {{ $key }}
-              value: {{ $value | quote }}
-{{- end }}
-{{- end }}
+            - name: WORDPRESS_DATABASE_HOST
+              value: "{{ .Values.env.WORDPRESS_DATABASE_HOST }}"
+            - name: WORDPRESS_DATABASE_PORT_NUMBER
+              value: "{{ .Values.env.WORDPRESS_DATABASE_PORT_NUMBER }}"
+            - name: WORDPRESS_DATABASE_NAME
+              value: "{{ .Values.env.WORDPRESS_DATABASE_NAME }}"
+            - name: WORDPRESS_DATABASE_USER
+              value: "{{ .Values.env.WORDPRESS_DATABASE_USER }}"
+            - name: WORDPRESS_DATABASE_PASSWORD
+              value: "{{ .Values.env.WORDPRESS_DATABASE_PASSWORD }}"
+            - name: WORDPRESS_ENABLE_DATABASE_SSL
+              value: "{{ .Values.env.WORDPRESS_ENABLE_DATABASE_SSL }}"
           volumeMounts:
             - name: wp-content
-              mountPath: /bitnami/wordpress
-          securityContext:
-            runAsUser: 1001
-            runAsGroup: 1001
+              mountPath: "{{ .Values.persistence.mountPath }}"
           lifecycle:
             postStart:
               exec:
-                command:
-                  - sh
-                  - -c
-                  - |
-                    echo "🔁 PostStart permission check..."
-                    mkdir -p /bitnami/wordpress
-                    chown -R 1001:1001 /bitnami/wordpress || true
-                    chmod -R u+w /bitnami/wordpress || true
+                command: ["/bin/bash", "-c", "/install-woocommerce.sh"]
+          securityContext:
+            runAsUser: 1001
       volumes:
         - name: wp-content
           persistentVolumeClaim:
-            claimName: {{ .Values.persistence.claimName | default "wp-pvc" }}
+            claimName: "{{ .Values.persistence.claimName }}"

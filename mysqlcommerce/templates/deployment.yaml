@@ -12,43 +12,21 @@ spec:
       labels:
         app: mysqlcommerce
     spec:
-      securityContext:
-        fsGroup: {{ .Values.securityContext.pod.fsGroup }}
       containers:
         - name: mysql
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: MYSQL_ROOT_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: mysql-auth
-                  key: mysql-root-password
+              value: "{{ .Values.mysqlRootPassword }}"
             - name: MYSQL_DATABASE
-              valueFrom:
-                secretKeyRef:
-                  name: mysql-auth
-                  key: mysql-database
-            - name: MYSQL_USER
-              valueFrom:
-                secretKeyRef:
-                  name: mysql-auth
-                  key: mysql-user
-            - name: MYSQL_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: mysql-auth
-                  key: mysql-password
+              value: "{{ .Values.mysqlDatabase }}"
           ports:
-            - containerPort: 3306
-              name: mysql
+            - name: metrics               # ✅ Ajout ici
+              containerPort: 3306
           volumeMounts:
             - name: mysql-pv
-              mountPath: /bitnami/mysql/data
-          securityContext:
-            runAsUser: {{ .Values.securityContext.container.runAsUser }}
-            runAsGroup: {{ .Values.securityContext.container.runAsGroup }}
+              mountPath: /var/lib/mysql
       volumes:
         - name: mysql-pv
           persistentVolumeClaim:
-            claimName: {{ .Values.persistence.claimName }}
+            claimName: mysql-pvc

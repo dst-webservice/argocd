@@ -1,29 +1,10 @@
 image:
-  repository: bitnami/mysql
-  tag: 8.0.36
-  pullPolicy: IfNotPresent
+  repository: mysql
+  tag: "8"  # Pas modifié par le pipeline, donc reste en "latest" pour les pods
 
-auth:
-  existingSecret: mysql-auth
+mysqlRootPassword: rootpassword
+mysqlDatabase: wordpress
 
 persistence:
-  enabled: true
-  storageClassName: gp2
   size: 1Gi
-  claimName: mysql-pvc
-
-securityContext:
-  pod:
-    fsGroup: 1001
-  container:
-    runAsUser: 1001
-    runAsGroup: 1001
-
-configuration: |
-  [mysqld]
-  skip-name-resolve
-  explicit_defaults_for_timestamp
-  basedir=/opt/bitnami/mysql
-  plugin_dir=/opt/bitnami/mysql/lib/plugin
-  port=3306
-  ssl=0
+  storageClassName: gp2  # Valeur remplacée par le pipeline GitLab si besoin (ex: gp2)
