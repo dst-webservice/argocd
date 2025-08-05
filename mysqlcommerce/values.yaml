@@ -12,7 +12,7 @@ env:
 persistence:
   enabled: true
   size: 1Gi
-  storageClassName: gp2
+  storageClassName: gp2  # ✅ Pour K3S
   mountPath: /bitnami/mysql
   claimName: mysql-pvc
 
@@ -21,8 +21,7 @@ service:
   port: 3306
 
 monitoring:
-  enabled: false
+  enabled: false  # ✅ On désactive le conteneur exporter pour éviter les erreurs (optionnel mais recommandé)
 
 podSecurityContext:
-  fsGroup: 1001
-
+  fsGroup: 1001  # ✅ Autorise l’utilisateur 1001 à écrire dans le volume monté

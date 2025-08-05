@@ -12,14 +12,15 @@ spec:
       labels:
         app: webcommerce
     spec:
-      securityContext:
-        fsGroup: 1001
+      securityContext: {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: wordpress
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           ports:
-            - name: http  # 👈 nécessaire pour Prometheus
+            - name: http
               containerPort: 8080
+          securityContext: {{- toYaml .Values.containerSecurityContext | nindent 12 }}
           env:
             - name: WORDPRESS_DATABASE_HOST
               value: "{{ .Values.env.WORDPRESS_DATABASE_HOST }}"
@@ -34,7 +35,7 @@ spec:
             - name: WORDPRESS_ENABLE_DATABASE_SSL
               value: "{{ .Values.env.WORDPRESS_ENABLE_DATABASE_SSL }}"
           volumeMounts:
-            - name: wp-pvc  # ✅ corrigé ici
+            - name: wp-pvc
               mountPath: "{{ .Values.persistence.mountPath }}"
           lifecycle:
             postStart:
@@ -44,6 +45,6 @@ spec:
                   - "-c"
                   - "sleep 120 && /install-woocommerce.sh"
       volumes:
-        - name: wp-pvc  # ✅ ajouté ici pour cohérence
+        - name: wp-pvc
           persistentVolumeClaim:
             claimName: "{{ .Values.persistence.claimName }}"

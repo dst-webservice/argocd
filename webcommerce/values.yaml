@@ -1,7 +1,9 @@
 image:
   repository: repodocker2025/webcommerce
-  tag: "57a47fa5"
+  tag: "6115e9ba"
   pullPolicy: IfNotPresent
+
+replicaCount: 1
 
 service:
   type: ClusterIP
@@ -14,23 +16,21 @@ env:
   WORDPRESS_DATABASE_NAME: wp_db
   WORDPRESS_DATABASE_USER: wp_user
   WORDPRESS_DATABASE_PASSWORD: wp_pass2025
-  WORDPRESS_ENABLE_DATABASE_SSL: "no"
+  WORDPRESS_ENABLE_DATABASE_SSL: "no"  # SSL désactivé pour la connexion locale K3S
 
 persistence:
   enabled: true
   size: 1Gi
-  storageClassName: gp2
+  storageClassName: gp2  # Pour K3S
   mountPath: /bitnami/wordpress
   claimName: wp-pvc
 
-replicaCount: 1
-
 podSecurityContext:
-  fsGroup: 1001
+  fsGroup: 1001  # ✅ Autorise l'utilisateur 1001 à écrire sur le volume monté
 
 containerSecurityContext:
   runAsUser: 1001
-  runAsNonRoot: true
+  runAsNonRoot: true  # ✅ Bonnes pratiques de sécurité
 
 monitoring:
-  enabled: false
+  enabled: false  # Aucune intégration Prometheus/Exporter nécessaire ici

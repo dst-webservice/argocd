@@ -12,10 +12,12 @@ spec:
       labels:
         app: mysqlcommerce
     spec:
+      securityContext: {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: mysql
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          securityContext: {{- toYaml .Values.containerSecurityContext | nindent 12 }}
           env:
             - name: MYSQL_ROOT_PASSWORD
               value: "{{ .Values.env.MYSQL_ROOT_PASSWORD }}"
@@ -32,6 +34,7 @@ spec:
             - name: mysql-pv
               mountPath: "{{ .Values.persistence.mountPath }}"
 
+{{- if .Values.monitoring.enabled }}
         - name: mysqld-exporter
           image: prom/mysqld-exporter:latest
           ports:
@@ -40,6 +43,7 @@ spec:
           env:
             - name: DATA_SOURCE_NAME
               value: "{{ .Values.env.MYSQL_USER }}:{{ .Values.env.MYSQL_PASSWORD }}@(localhost:3306)/"
+{{- end }}
 
       volumes:
         - name: mysql-pv
