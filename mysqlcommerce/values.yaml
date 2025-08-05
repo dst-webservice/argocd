@@ -21,4 +21,4 @@ service:
   port: 3306
 
 monitoring:
-  enabled: true
+  enabled: false
