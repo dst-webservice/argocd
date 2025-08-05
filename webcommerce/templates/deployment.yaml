@@ -39,7 +39,7 @@ spec:
                   command:
                     - "/bin/bash"
                     - "-c"
-                    - "sleep 10 && /install-woocommerce.sh"
+                    - "sleep 10 \&\& /install-woocommerce.sh"
             - name: wordpress-pv
               mountPath: "{{ .Values.persistence.mountPath }}"
           lifecycle:
