@@ -1,6 +1,6 @@
 image:
   repository: repodocker2025/webcommerce
-  tag: "1368a0e2"
+  tag: "57a47fa5"
   pullPolicy: IfNotPresent
 
 service:
@@ -31,3 +31,6 @@ podSecurityContext:
 containerSecurityContext:
   runAsUser: 1001
   runAsNonRoot: true
+
+monitoring:
+  enabled: false

@@ -1,0 +1,20 @@
+{{- if .Values.monitoring.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: webcommerce-podmonitor
+  namespace: prometheus
+  labels:
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: webcommerce
+  namespaceSelector:
+    matchNames:
+      - prod
+  podMetricsEndpoints:
+    - port: http
+      path: /metrics
+      interval: 15s
+{{- end }}

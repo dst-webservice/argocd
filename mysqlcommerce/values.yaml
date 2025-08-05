@@ -19,3 +19,6 @@ persistence:
 service:
   type: ClusterIP
   port: 3306
+
+monitoring:
+  enabled: true

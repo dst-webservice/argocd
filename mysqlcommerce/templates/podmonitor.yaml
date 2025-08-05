@@ -1,0 +1,20 @@
+{{- if .Values.monitoring.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: mysqlcommerce-podmonitor
+  namespace: prometheus
+  labels:
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: mysqlcommerce
+  namespaceSelector:
+    matchNames:
+      - prod
+  podMetricsEndpoints:
+    - port: mysql
+      path: /metrics
+      interval: 15s
+{{- end }}

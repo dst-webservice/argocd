@@ -31,6 +31,16 @@ spec:
           volumeMounts:
             - name: mysql-pv
               mountPath: "{{ .Values.persistence.mountPath }}"
+
+        - name: mysqld-exporter
+          image: prom/mysqld-exporter:latest
+          ports:
+            - name: metrics
+              containerPort: 9104
+          env:
+            - name: DATA_SOURCE_NAME
+              value: "{{ .Values.env.MYSQL_USER }}:{{ .Values.env.MYSQL_PASSWORD }}@(localhost:3306)/"
+
       volumes:
         - name: mysql-pv
           persistentVolumeClaim:

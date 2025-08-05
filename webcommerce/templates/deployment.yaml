@@ -18,7 +18,8 @@ spec:
         - name: wordpress
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           ports:
-            - containerPort: 8080
+            - name: http  # 👈 nécessaire pour Prometheus
+              containerPort: 8080
           env:
             - name: WORDPRESS_DATABASE_HOST
               value: "{{ .Values.env.WORDPRESS_DATABASE_HOST }}"
@@ -33,7 +34,7 @@ spec:
             - name: WORDPRESS_ENABLE_DATABASE_SSL
               value: "{{ .Values.env.WORDPRESS_ENABLE_DATABASE_SSL }}"
           volumeMounts:
-            - name: wordpress-pv
+            - name: wp-pvc  # ✅ corrigé ici
               mountPath: "{{ .Values.persistence.mountPath }}"
           lifecycle:
             postStart:
@@ -43,6 +44,6 @@ spec:
                   - "-c"
                   - "sleep 120 && /install-woocommerce.sh"
       volumes:
-        - name: wordpress-pv
+        - name: wp-pvc  # ✅ ajouté ici pour cohérence
           persistentVolumeClaim:
             claimName: "{{ .Values.persistence.claimName }}"
