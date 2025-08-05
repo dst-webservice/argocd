@@ -12,6 +12,8 @@ spec:
       labels:
         app: mysqlcommerce
     spec:
+      securityContext:
+        fsGroup: 1001  # 🔧 Donne accès en écriture au volume monté
       containers:
         - name: mysql
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -35,3 +37,4 @@ spec:
         - name: mysql-pv
           persistentVolumeClaim:
             claimName: "{{ .Values.persistence.claimName }}"
+
