@@ -12,9 +12,9 @@ spec:
       labels:
         app: webcommerce
     spec:
-  securityContext:
-    fsGroup: 1001
-  containers:
+      securityContext:
+        fsGroup: 1001
+      containers:
         - name: wordpress
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           ports:
@@ -33,13 +33,6 @@ spec:
             - name: WORDPRESS_ENABLE_DATABASE_SSL
               value: "{{ .Values.env.WORDPRESS_ENABLE_DATABASE_SSL }}"
           volumeMounts:
-        lifecycle:
-              postStart:
-                exec:
-                  command:
-                    - "/bin/bash"
-                    - "-c"
-                    - "sleep 10 \&\& /install-woocommerce.sh"
             - name: wordpress-pv
               mountPath: "{{ .Values.persistence.mountPath }}"
           lifecycle:
